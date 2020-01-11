@@ -36,7 +36,7 @@ const computeFinalGrades = (freq_grade, exam_percentage) => {
     const exam_to_final_grades = {};
     const final_grades = {};
     possible_exam_grades.forEach((possible_exam_grade) => {
-        const final_grade = parseInt(((freq_grade*freq_percentage/100) + (possible_exam_grade*exam_percentage/100)).toFixed(2), 10);
+        const final_grade = parseFloat(((freq_grade*freq_percentage/100) + (possible_exam_grade*exam_percentage/100)).toFixed(3), 10);
         const rounded_final_grade = Math.round(final_grade);
         if (!final_grades[rounded_final_grade]) {
             final_grades[rounded_final_grade] = {
@@ -63,12 +63,13 @@ if (process.argv.length < 4) {
     `, 1);
 }
 
-const freq_grade = parseInt(process.argv[2], 10);
-const exam_percentage = parseInt(process.argv[3], 10);
+const freq_grade = parseFloat(process.argv[2], 10);
+const exam_percentage = parseFloat(process.argv[3], 10);
 
 validateParams(freq_grade, exam_percentage);
 
 const { exam_to_final_grades, final_grades } = computeFinalGrades(freq_grade, exam_percentage);
+
 
 const min_grade = exam_to_final_grades[0];
 const max_grade = exam_to_final_grades[20];
@@ -78,5 +79,9 @@ console.log(`Maximum final grade: ${max_grade} (rounded: ${Math.round(max_grade)
 
 console.log("Final grade will be")
 for (const final_grade in final_grades) {
-    console.log(`${final_grade}\tfrom ${final_grades[final_grade].min} to ${final_grades[final_grade].max}`)
+    if (final_grades[final_grade].min !== final_grades[final_grade].max) {
+        console.log(`${final_grade}\tfrom ${final_grades[final_grade].min} to ${final_grades[final_grade].max}`);
+    } else {
+        console.log(`${final_grade}\tif ${final_grades[final_grade].min}`);
+    }
 }
