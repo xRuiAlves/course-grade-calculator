@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <script src="./grades_pageversion.js" defer></script>
+    
+    <title>Course Grade Calculator</title>
+</head>
+<body>
+    <header style="margin-bottom: 2em">
+        <h1 style="margin-bottom: 0.25em">Course Grade Calculator</h1>
+        <p style="margin-top: 0">Made with &hearts; by Rui Alves</p>
+    </header>
+
+    <form id="form">
+        <label>
+            <strong>Frequency Grade</strong> (0 - 20)<br />
+            <input type="decimal" name="freq_grade" />
+        </label>
+        <br /><br />
+        <label>
+            <strong>Exam Percentage</strong> (0 - 100)<br />
+            <input type="decimal" name="exam_percentage" />
+        </label>
+        <br /><br />
+        <button>Calculate</button>
+    </form>
+    <p id="error" style="color: red"></p>
+    <div id="results" style="margin-top: 2.5em">
+        
+    </div>
+</body>
+</html>
