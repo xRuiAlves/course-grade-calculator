@@ -1,4 +1,5 @@
 const displayError = (message) => {
+    clearResults();
     document.querySelector("#error").textContent = message;
 }
 
@@ -103,9 +104,9 @@ const clearResults = () => document.querySelector("#results").innerHTML = "";
 const computeGrade = (e) => {
     e.preventDefault();
     
-    const freq_grade = parseFloat(document.querySelector("#form input[name=\"freq_grade\"]").value, 10);
-    const exam_percentage = parseFloat(document.querySelector("#form input[name=\"exam_percentage\"]").value, 10);
-    const min_grade = parseFloat(document.querySelector("#form input[name=\"min_grade\"]").value, 10);
+    const freq_grade = parseFloat(document.querySelector("#form input[name=\"freq_grade\"]").value.replace(",","."), 10);
+    const exam_percentage = parseFloat(document.querySelector("#form input[name=\"exam_percentage\"]").value.replace(",","."), 10);
+    const min_grade = parseFloat(document.querySelector("#form input[name=\"min_grade\"]").value.replace(",","."), 10);
     
     if(!validateParams(freq_grade, exam_percentage, min_grade)) {
         return;
