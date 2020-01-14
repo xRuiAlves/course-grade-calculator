@@ -2,9 +2,9 @@ const displayError = (message) => {
     document.querySelector("#error").textContent = message;
 }
 
-const validateParams = (freq_grade, exam_percentage) => {
-    if (isNaN(freq_grade) || isNaN(exam_percentage)) {
-        displayError("Both frequency grade and exam percentage");
+const validateParams = (freq_grade, exam_percentage, min_grade) => {
+    if (isNaN(freq_grade) || isNaN(exam_percentage) || isNaN(min_grade)) {
+        displayError("All input parameters must be numbers");
         return false;
     }
     
@@ -15,6 +15,11 @@ const validateParams = (freq_grade, exam_percentage) => {
     
     if (!validPercentage(exam_percentage)) {
         displayError("Exam percentage should be in the range [1, 100]");
+        return false;
+    }
+    
+    if (!validGrade(min_grade)) {
+        displayError("Exam minimum grade should be in the range [0, 20]");
         return false;
     }
     
@@ -33,6 +38,10 @@ const buildExamPossibleGrades = () => {
     return possible_grades;
 }
 
+const calculateGrade = (freq_grade, freq_percentage, exam_grade, exam_percentage) => (
+    parseFloat(((freq_grade*freq_percentage/100) + (exam_grade*exam_percentage/100)).toFixed(3), 10)
+)
+
 const computeFinalGrades = (freq_grade, exam_percentage) => {
     const freq_percentage = 100 - exam_percentage;
     const possible_exam_grades = buildExamPossibleGrades();
@@ -40,7 +49,7 @@ const computeFinalGrades = (freq_grade, exam_percentage) => {
     const exam_to_final_grades = {};
     const final_grades = {};
     possible_exam_grades.forEach((possible_exam_grade) => {
-        const final_grade = parseFloat(((freq_grade*freq_percentage/100) + (possible_exam_grade*exam_percentage/100)).toFixed(3), 10);
+        const final_grade = calculateGrade(freq_grade, freq_percentage, possible_exam_grade, exam_percentage);
         const rounded_final_grade = Math.round(final_grade);
         if (!final_grades[rounded_final_grade]) {
             final_grades[rounded_final_grade] = {
@@ -60,6 +69,33 @@ const computeFinalGrades = (freq_grade, exam_percentage) => {
     };
 }
 
+cropBellowMinGrade = (final_grades, min_grade) => {
+    if (min_grade === 0) {
+        return final_grades;
+    }
+
+    const parsed_final_grades = {};
+    parsed_final_grades[0] = {
+        min: 0,
+        max: min_grade - 0.1
+    }
+
+    for (const final_grade in final_grades) {
+        if (final_grades[final_grade].min < min_grade && final_grades[final_grade].max < min_grade) {
+            continue;
+        } else if (final_grades[final_grade].min < min_grade) {
+            parsed_final_grades[final_grade] = {
+                min: min_grade,
+                max: final_grades[final_grade].max
+            }
+        } else {
+            parsed_final_grades[final_grade] = final_grades[final_grade];
+        }
+    }
+
+    return parsed_final_grades;
+}
+
 const clearErrors = () => document.querySelector("#error").innerHTML = "";
 
 const clearResults = () => document.querySelector("#results").innerHTML = "";
@@ -69,8 +105,9 @@ const computeGrade = (e) => {
     
     const freq_grade = parseFloat(document.querySelector("#form input[name=\"freq_grade\"]").value, 10);
     const exam_percentage = parseFloat(document.querySelector("#form input[name=\"exam_percentage\"]").value, 10);
+    const min_grade = parseFloat(document.querySelector("#form input[name=\"min_grade\"]").value, 10);
     
-    if(!validateParams(freq_grade, exam_percentage)) {
+    if(!validateParams(freq_grade, exam_percentage, min_grade)) {
         return;
     }
 
@@ -80,16 +117,18 @@ const computeGrade = (e) => {
     clearErrors();
 
     const { exam_to_final_grades, final_grades } = computeFinalGrades(freq_grade, exam_percentage);
+
+    const parsed_final_grades = cropBellowMinGrade(final_grades, min_grade);
     
-    const min_grade = exam_to_final_grades[0];
-    const max_grade = exam_to_final_grades[20];
+    const display_min_grade = calculateGrade(freq_grade, (100-exam_percentage), min_grade, exam_percentage);
+    const display_max_grade = exam_to_final_grades[20];
     
     const p = document.createElement("p");
 
-    p.innerHTML = `<strong>Minimum final grade:</strong> ${min_grade} (rounded: ${Math.round(min_grade)})`;
+    p.innerHTML = `<strong>Minimum final grade:</strong> ${display_min_grade} (rounded: ${Math.round(display_min_grade)})`;
     results.appendChild(p.cloneNode(true));
 
-    p.innerHTML = `<strong>Maximum final grade:</strong> ${max_grade} (rounded: ${Math.round(max_grade)})`;
+    p.innerHTML = `<strong>Maximum final grade:</strong> ${display_max_grade} (rounded: ${Math.round(display_max_grade)})`;
     results.appendChild(p.cloneNode(true));
     
     p.innerHTML = "<strong>Final grade will be:</strong>";
@@ -97,13 +136,13 @@ const computeGrade = (e) => {
     results.appendChild(p.cloneNode(true));
     
     const ul = document.createElement("ul");
-    for (const final_grade in final_grades) {
+    for (const final_grade in parsed_final_grades) {
         const li = document.createElement("li");
         li.style.marginBottom = "0.5em";
-        if (final_grades[final_grade].min !== final_grades[final_grade].max) {
-            li.innerHTML = `<strong style="margin-right: 0.75em">${final_grade}</strong> from <strong>${final_grades[final_grade].min}</strong> to <strong>${final_grades[final_grade].max}</strong>`;
+        if (parsed_final_grades[final_grade].min !== parsed_final_grades[final_grade].max) {
+            li.innerHTML = `<strong style="margin-right: 0.75em">${final_grade}</strong> from <strong>${parsed_final_grades[final_grade].min}</strong> to <strong>${parsed_final_grades[final_grade].max}</strong>`;
         } else {
-            li.innerHTML = `<strong style="margin-right: 0.75em">${final_grade}</strong> if <strong>${final_grades[final_grade].min}</strong>`;
+            li.innerHTML = `<strong style="margin-right: 0.75em">${final_grade}</strong> if <strong>${parsed_final_grades[final_grade].min}</strong>`;
         }
         ul.appendChild(li);
     }
