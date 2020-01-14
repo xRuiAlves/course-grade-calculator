@@ -60,6 +60,10 @@ const computeFinalGrades = (freq_grade, exam_percentage) => {
     };
 }
 
+const clearErrors = () => document.querySelector("#error").innerHTML = "";
+
+const clearResults = () => document.querySelector("#results").innerHTML = "";
+
 const computeGrade = (e) => {
     e.preventDefault();
     
@@ -71,7 +75,9 @@ const computeGrade = (e) => {
     }
 
     const results = document.querySelector("#results");
-    results.innerHTML = "";
+    
+    clearResults();
+    clearErrors();
 
     const { exam_to_final_grades, final_grades } = computeFinalGrades(freq_grade, exam_percentage);
     
