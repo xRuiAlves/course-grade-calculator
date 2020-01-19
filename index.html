@@ -6,13 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <script src="./grades_pageversion.js" defer></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Poppins&display=swap" rel="stylesheet">
     
     <title>Course Grade Calculator</title>
 </head>
 <body>
     <header style="margin-bottom: 2em">
         <h1 style="margin-bottom: 0.25em">Course Grade Calculator</h1>
-        <p style="margin-top: 0">Made with &hearts; by <a href="https://github.com/xRuiAlves">Rui Alves</a></p>
+        <p style="margin-top: 0">Made with 	&#10084; by <a href="https://github.com/xRuiAlves">Rui Alves</a></p>
     </header>
 
     <form id="form">
@@ -22,7 +25,7 @@
         </label>
         <br /><br />
         <label>
-            <strong>Exam Percentage</strong> (0 - 100)<br />
+            <strong>Exam Percentage</strong> (1 - 100)<br />
             <input type="text" name="exam_percentage" />
         </label>
         <br /><br />
@@ -33,7 +36,7 @@
         <br /><br />
         <button>Calculate</button>
     </form>
-    <p id="error" style="color: red"></p>
+    <p id="error"></p>
     <div id="results" style="margin-top: 2.5em">
         
     </div>
