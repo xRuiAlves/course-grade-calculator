@@ -69,6 +69,7 @@ button:focus {
 #results {
   max-width: 500px;
   margin: auto;
+  margin-top: 2.5em;
 }
 
 ul {
@@ -79,4 +80,16 @@ ul {
   margin-top: 10px;
   padding: 0;
   color: #0D5C63;
+}
+
+header {
+  margin-bottom: 2em;
+}
+
+header h1 {
+  margin-bottom: 0.25em;
+}
+
+header p {
+  margin-top: 0;
 }
