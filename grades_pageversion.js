@@ -130,25 +130,42 @@ const computeGrade = (e) => {
     results.appendChild(p.cloneNode(true));
 
     p.innerHTML = `<strong>Maximum final grade:</strong> ${display_max_grade} (rounded: ${Math.round(display_max_grade)})`;
+    p.classList.add("final-grade-max-min")
     results.appendChild(p.cloneNode(true));
     
     p.innerHTML = "<strong>Final grade will be:</strong>";
-    p.style.marginTop = "2em";
+    p.classList.remove("final-grade-max-min");
     results.appendChild(p.cloneNode(true));
     
-    const ul = document.createElement("ul");
+    const table = document.createElement("table");
+
+    const tr_header = document.createElement("tr");
+    const th = document.createElement("th");
+    const td = document.createElement("td");
+
+    th.textContent = "Final Grade";
+    tr_header.appendChild(th.cloneNode(true));
+    th.textContent = "from";
+    tr_header.appendChild(th.cloneNode(true));
+    th.textContent = "to";
+    tr_header.appendChild(th.cloneNode(true));
+
+    table.appendChild(tr_header);
+
     for (const final_grade in parsed_final_grades) {
-        const li = document.createElement("li");
-        li.style.marginBottom = "0.5em";
-        if (parsed_final_grades[final_grade].min !== parsed_final_grades[final_grade].max) {
-            li.innerHTML = `<strong style="margin-right: 0.75em">${final_grade}</strong> from <strong>${parsed_final_grades[final_grade].min}</strong> to <strong>${parsed_final_grades[final_grade].max}</strong>`;
-        } else {
-            li.innerHTML = `<strong style="margin-right: 0.75em">${final_grade}</strong> if <strong>${parsed_final_grades[final_grade].min}</strong>`;
-        }
-        ul.appendChild(li);
+        const tr = document.createElement("tr");
+
+        td.textContent = final_grade;
+        tr.appendChild(td.cloneNode(true));
+        td.textContent = parsed_final_grades[final_grade].min;
+        tr.appendChild(td.cloneNode(true));
+        td.textContent = parsed_final_grades[final_grade].max;
+        tr.appendChild(td.cloneNode(true));
+        
+        table.appendChild(tr);
     }
 
-    results.appendChild(ul);
+    results.appendChild(table);
 }
 
 document.querySelector("#form").addEventListener("submit", computeGrade);
